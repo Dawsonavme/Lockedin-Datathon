@@ -1,0 +1,11 @@
+{
+  "_note": "PLACEHOLDER values. The point values and thresholds here are not the official bounty rules. Replace them with the real rules.",
+  "max_points_per_row": 100,
+  "rules": [
+    {"name": "in_kev", "field": "in_kev", "op": "==", "value": 1, "points": 50},
+    {"name": "epss_high", "field": "epss", "op": ">=", "value": 0.5, "points": 20},
+    {"name": "public_exploit", "field": "exploitdb", "op": "==", "value": 1, "points": 10},
+    {"name": "metasploit_module", "field": "metasploit", "op": "==", "value": 1, "points": 10},
+    {"name": "critical_cvss", "field": "cvss3_score", "op": ">=", "value": 9.0, "points": 10}
+  ]
+}
