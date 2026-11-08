@@ -1,10 +1,12 @@
 import json
 from datetime import date, timedelta
 
+from unittest import mock
+
 from django.test import TestCase
 from django.utils import timezone
 
-from CvePatcherApp import challenges
+from CvePatcherApp import challenges, explain
 from CvePatcherApp.models import Bounty, Cve, Sponsor, User, UserRegisteredBounty
 
 # Create your tests here.
@@ -109,6 +111,37 @@ class BoardTests(ApiTestCase):
 
     def test_unknown_sort_falls_back_to_value(self):
         self.assertEqual(self.ids('/board?Sort=Password'), ['CVE-2', 'CVE-3', 'CVE-1'])
+
+
+class ExplainTests(ApiTestCase):
+    def setUp(self):
+        self.bounty = make_bounty('CVE-1')
+
+    def test_asks_granite_once_then_uses_the_saved_answer(self):
+        with mock.patch.object(explain, 'ask_granite', return_value="What's broken: a buffer") as ask:
+            first = self.call('get', f'/board/{self.bounty.Bounty_Id}/explain')
+            second = self.call('get', f'/board/{self.bounty.Bounty_Id}/explain')
+        self.assertEqual(first.json()['Explanation'], "What's broken: a buffer")
+        self.assertEqual(second.json(), first.json())
+        ask.assert_called_once()
+
+    def test_granite_down_is_a_503(self):
+        with mock.patch.object(explain, 'ask_granite', side_effect=explain.GraniteUnavailable('refused')):
+            response = self.call('get', f'/board/{self.bounty.Bounty_Id}/explain')
+        self.assertEqual(response.status_code, 503)
+        self.assertEqual(Cve.objects.get(pk='CVE-1').Explanation, '')
+
+    def test_unknown_bounty_is_a_404(self):
+        self.assertEqual(self.call('get', '/board/999/explain').status_code, 404)
+
+
+class InsightsTests(ApiTestCase):
+    def test_serves_the_insights_file(self):
+        response = self.call('get', '/insights')
+        if response.status_code == 404:
+            self.assertIn('insights.py', response.json()['detail'])
+        else:
+            self.assertIn('histogram', response.json())
 
 
 class GameTests(ApiTestCase):

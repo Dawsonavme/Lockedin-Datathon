@@ -1,3 +1,6 @@
+import json
+
+from django.conf import settings
 from django.core import signing
 from django.core.files.storage import default_storage
 from django.db import transaction
@@ -8,7 +11,7 @@ from rest_framework.parsers import JSONParser
 from django.http.response import JsonResponse
 from django.utils import timezone
 
-from CvePatcherApp import challenges
+from CvePatcherApp import challenges, explain
 from CvePatcherApp.models import Sponsor, User, Bounty, UserRegisteredBounty, SponsorPoint
 from CvePatcherApp.serializers import (
     SponsorSerializer, UserSerializer, BountySerializer,
@@ -340,6 +343,18 @@ def boardApi(request, id=0):
     })
 
 
+def explainApi(request, id):
+    """GET: Granite's plain-language explanation of the bounty's CVE -> {Cve_Id, Explanation}"""
+    bounty = Bounty.objects.select_related('Cve_Id').filter(Bounty_Id=id).first()
+    if not bounty:
+        return not_found('Bounty')
+    try:
+        text = explain.explanation(bounty.Cve_Id)
+    except explain.GraniteUnavailable:
+        return error("Granite isn't available right now. Try again in a minute.", 503)
+    return JsonResponse({'Cve_Id': bounty.Cve_Id.Cve_Id, 'Explanation': text})
+
+
 @csrf_exempt
 def registerApi(request, id):
     """POST: the signed-in user accepts a bounty."""
@@ -434,6 +449,16 @@ def challengesApi(request):
             'Bounties': BountyCardSerializer([by_id[b.pk] for b in weekly], many=True).data,
         },
     })
+
+
+INSIGHTS = settings.BASE_DIR.parent / 'Bounty' / 'assets' / 'data' / 'parsed' / 'insights.json'
+
+
+def insightsApi(request):
+    """Board statistics for the insights page, made by backend/Bounty/src/bounty/insights.py."""
+    if not INSIGHTS.exists():
+        return error('No insights yet. Run src/bounty/insights.py in backend/Bounty.', 404)
+    return JsonResponse(json.loads(INSIGHTS.read_text()))
 
 
 def leaderboardApi(request):
