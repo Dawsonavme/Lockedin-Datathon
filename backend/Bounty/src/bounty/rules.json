@@ -1,11 +1,28 @@
 {
-  "_note": "PLACEHOLDER values. The point values and thresholds here are not the official bounty rules. Replace them with the real rules.",
-  "max_points_per_row": 100,
-  "rules": [
-    {"name": "in_kev", "field": "in_kev", "op": "==", "value": 1, "points": 50},
-    {"name": "epss_high", "field": "epss", "op": ">=", "value": 0.5, "points": 20},
-    {"name": "public_exploit", "field": "exploitdb", "op": "==", "value": 1, "points": 10},
-    {"name": "metasploit_module", "field": "metasploit", "op": "==", "value": 1, "points": 10},
-    {"name": "critical_cvss", "field": "cvss3_score", "op": ">=", "value": 9.0, "points": 10}
-  ]
+  "_note": "Starting weights for points = severity x urgency x difficulty x rarity. Tuned so most bounties land between 150 and 350 points, with confirmed-exploited ones much higher. Change freely.",
+  "round_to": 5,
+  "severity": {
+    "_note": "base + per_impact_point x CVSS 3 impact (0-6). Granite's estimate is used when NIST has no score.",
+    "base": 50,
+    "per_impact_point": 25
+  },
+  "urgency": {
+    "epss_weight": 1.5,
+    "exploitability_weight": 0.25,
+    "exploit_code": {"poc_github": 0.15, "exploitdb": 0.15, "nuclei": 0.15, "metasploit": 0.3},
+    "kev_multiplier": 1.5,
+    "ransomware_multiplier": 1.25
+  },
+  "difficulty": {
+    "_note": "fix_type weights apply to Granite's answer; fix_type_missing is used for CVEs Granite has not labelled yet.",
+    "scope_changed": 0.2,
+    "per_log10_products": 0.1,
+    "max_log10_products": 3,
+    "fix_type": {"upgrade": 0.0, "config": 0.1, "code_change": 0.3, "unclear": 0.15},
+    "fix_type_missing": 0.15
+  },
+  "rarity": {
+    "cwe_rarity_weight": 0.3,
+    "abstraction": {"variant": 1.15, "base": 1.1, "compound": 1.1}
+  }
 }
