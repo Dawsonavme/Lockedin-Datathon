@@ -14,12 +14,12 @@
     "ransomware_multiplier": 1.25
   },
   "difficulty": {
-    "_note": "fix_type weights apply to Granite's answer; fix_type_missing is used for CVEs Granite has not labelled yet.",
-    "scope_changed": 0.2,
-    "per_log10_products": 0.1,
+    "_note": "fix_type weights apply to Granite's answer; fix_type_missing is used for CVEs Granite has not labelled yet. Ranges about 1.0-2.6, so a hard fix on a medium bug can compete with an easy patch on a critical one.",
+    "scope_changed": 0.4,
+    "per_log10_products": 0.2,
     "max_log10_products": 3,
-    "fix_type": {"upgrade": 0.0, "config": 0.1, "code_change": 0.3, "unclear": 0.15},
-    "fix_type_missing": 0.15
+    "fix_type": {"upgrade": 0.0, "config": 0.25, "code_change": 0.6, "unclear": 0.3},
+    "fix_type_missing": 0.3
   },
   "rarity": {
     "cwe_rarity_weight": 0.3,

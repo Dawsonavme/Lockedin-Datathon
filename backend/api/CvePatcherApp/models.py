@@ -59,6 +59,8 @@ class Cve(models.Model):
     Category = models.TextField(blank=True)  # injection, memory, access, other
     Fix_Type = models.TextField(blank=True)  # upgrade, code_change, config, unclear
     In_Kev = models.BooleanField(default=False)
+    # Granite's plain-language explanation, written the first time someone asks (explain.py)
+    Explanation = models.TextField(blank=True)
 
     class Meta:
         managed = True

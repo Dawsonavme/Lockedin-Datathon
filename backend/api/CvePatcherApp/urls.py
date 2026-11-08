@@ -28,6 +28,7 @@ urlpatterns = [
     re_path(r'^me$', views.meApi),
     re_path(r'^board$', views.boardApi),
     re_path(r'^board/([0-9]+)$', views.boardApi),
+    re_path(r'^board/([0-9]+)/explain$', views.explainApi),
     re_path(r'^board/([0-9]+)/register$', views.registerApi),
     re_path(r'^board/([0-9]+)/complete$', views.completeApi),
     re_path(r'^board/([0-9]+)/addpoints$', views.addPointsApi),

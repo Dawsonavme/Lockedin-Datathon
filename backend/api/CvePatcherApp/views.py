@@ -8,7 +8,7 @@ from rest_framework.parsers import JSONParser
 from django.http.response import JsonResponse
 from django.utils import timezone
 
-from CvePatcherApp import challenges
+from CvePatcherApp import challenges, explain
 from CvePatcherApp.models import Sponsor, User, Bounty, UserRegisteredBounty, SponsorPoint
 from CvePatcherApp.serializers import (
     SponsorSerializer, UserSerializer, BountySerializer,
@@ -338,6 +338,18 @@ def boardApi(request, id=0):
         'Has_Next': start + BOARD_PAGE_SIZE < count,
         'Results': BountyCardSerializer(bounties[start:start + BOARD_PAGE_SIZE], many=True).data,
     })
+
+
+def explainApi(request, id):
+    """GET: Granite's plain-language explanation of the bounty's CVE -> {Cve_Id, Explanation}"""
+    bounty = Bounty.objects.select_related('Cve_Id').filter(Bounty_Id=id).first()
+    if not bounty:
+        return not_found('Bounty')
+    try:
+        text = explain.explanation(bounty.Cve_Id)
+    except explain.GraniteUnavailable:
+        return error("Granite isn't available right now. Try again in a minute.", 503)
+    return JsonResponse({'Cve_Id': bounty.Cve_Id.Cve_Id, 'Explanation': text})
 
 
 @csrf_exempt
