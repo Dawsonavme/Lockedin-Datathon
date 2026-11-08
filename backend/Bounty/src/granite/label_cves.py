@@ -11,7 +11,7 @@ CVEs are labelled hottest first (KEV, then EPSS), and results are appended as th
 finish, so the run can be stopped and restarted without losing work.
 
 Output: assets/data/parsed/granite_labels.csv
-Usage:  python src/granite/label_cves.py [--month 2025-12] [--limit 1000]
+Usage:  python src/granite/label_cves.py [--month 2025-12] [--limit 1000] [--unscored-only]
 """
 import argparse
 import csv
@@ -105,11 +105,15 @@ def main():
     parser.add_argument("--month", default="2025-12", help="signals month that defines the board (YYYY-MM)")
     parser.add_argument("--limit", type=int, help="label at most this many new CVEs")
     parser.add_argument("--workers", type=int, default=WORKERS, help="requests to send at once")
+    parser.add_argument("--unscored-only", action="store_true",
+                        help="only CVEs with no CVSS 3 score, which get no points until Granite estimates one")
     args = parser.parse_args()
 
     board = bounty_board(args.month)
     done = set(pd.read_csv(OUT, usecols=["cve_id"])["cve_id"]) if OUT.exists() else set()
     todo = board[~board["cve_id"].isin(done)]
+    if args.unscored_only:
+        todo = todo[todo["cvss3_impact_score"].isna()]
     if args.limit:
         todo = todo.head(args.limit)
     print(f"{len(board):,} CVEs on the {args.month} board, {len(done):,} already labelled, {len(todo):,} to do")
