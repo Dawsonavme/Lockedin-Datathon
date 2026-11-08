@@ -10,7 +10,7 @@ from pathlib import Path
 
 import pandas as pd
 
-DATA = Path("F:/LockedIn/assets/data")
+DATA = Path(__file__).resolve().parents[2] / "assets" / "data"
 OUT = DATA / "parsed" / "cve_monthly_features.parquet"
 
 # Monthly signals: one row per CVE per month
@@ -26,16 +26,40 @@ vulns = pd.read_csv(
         "published",
         "cvss3_score",
         "cvss3_severity",
+        "cvss3_impact_score",
+        "cvss3_exploitability_score",
         "attack_vector",
         "privileges_required",
         "user_interaction",
+        "scope",
         "cwe_ids",
+        "n_affected_cpes",
     ],
     parse_dates=["published"],
     low_memory=False,
 )
 assert vulns["cve_id"].is_unique, "vulnerabilities.csv has duplicate cve_id values"
-vulns["cvss3_score"] = pd.to_numeric(vulns["cvss3_score"], errors="coerce")
+for col in ["cvss3_score", "cvss3_impact_score", "cvss3_exploitability_score", "n_affected_cpes"]:
+    vulns[col] = pd.to_numeric(vulns[col], errors="coerce")
+
+# Rarity: the first CWE of each CVE, and how rare that CWE is across all CVEs.
+# cwe_rarity is 1 for the rarest CWE and close to 0 for the most common one.
+vulns["primary_cwe"] = vulns["cwe_ids"].str.split(";").str[0].str.strip()
+cwe_counts = vulns["primary_cwe"].value_counts()
+rarity = 1 - cwe_counts.rank(method="max", ascending=True, pct=True) + 1 / len(cwe_counts)
+vulns["cwe_rarity"] = vulns["primary_cwe"].map(rarity)
+
+weakness = pd.read_csv(DATA / "weakness_types.csv", usecols=["cwe_id", "name", "abstraction"])
+weakness["abstraction"] = weakness["abstraction"].str.strip().str.lower().fillna("category")
+vulns = vulns.merge(
+    weakness.rename(columns={"cwe_id": "primary_cwe", "name": "cwe_name", "abstraction": "cwe_abstraction"}),
+    on="primary_cwe",
+    how="left",
+)
+
+# Ransomware use from CISA's KEV list
+kev = pd.read_csv(DATA / "known_exploited.csv", usecols=["cve_id", "known_ransomware_use"])
+vulns["ransomware"] = vulns["cve_id"].isin(kev.loc[kev["known_ransomware_use"] == "Known", "cve_id"]).astype(int)
 
 features = signals.merge(vulns, on="cve_id", how="left")
 

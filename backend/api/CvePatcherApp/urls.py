@@ -21,4 +21,16 @@ urlpatterns = [
     re_path(r'^sponsorpoints/([0-9]+)$', views.sponsorPointApi),
 
     re_path(r'^savefile$', views.SaveFile),
+
+    # Game
+    re_path(r'^auth/signup$', views.signupApi),
+    re_path(r'^auth/login$', views.loginApi),
+    re_path(r'^me$', views.meApi),
+    re_path(r'^board$', views.boardApi),
+    re_path(r'^board/([0-9]+)$', views.boardApi),
+    re_path(r'^board/([0-9]+)/register$', views.registerApi),
+    re_path(r'^board/([0-9]+)/complete$', views.completeApi),
+    re_path(r'^board/([0-9]+)/addpoints$', views.addPointsApi),
+    re_path(r'^challenges$', views.challengesApi),
+    re_path(r'^leaderboard$', views.leaderboardApi),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
