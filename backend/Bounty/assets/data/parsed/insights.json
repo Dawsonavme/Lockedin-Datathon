@@ -1,0 +1,186 @@
+{
+  "month": "2025-12",
+  "bounties": 305346,
+  "median_points": 290,
+  "top_points": 2520,
+  "granite_labelled": 84453,
+  "granite_scored": 72742,
+  "still_unscored": 2720,
+  "histogram": [
+    {
+      "from": 50,
+      "to": 100,
+      "count": 2
+    },
+    {
+      "from": 100,
+      "to": 150,
+      "count": 6826
+    },
+    {
+      "from": 150,
+      "to": 200,
+      "count": 29112
+    },
+    {
+      "from": 200,
+      "to": 250,
+      "count": 46577
+    },
+    {
+      "from": 250,
+      "to": 300,
+      "count": 78634
+    },
+    {
+      "from": 300,
+      "to": 350,
+      "count": 48934
+    },
+    {
+      "from": 350,
+      "to": 400,
+      "count": 46965
+    },
+    {
+      "from": 400,
+      "to": 450,
+      "count": 24668
+    },
+    {
+      "from": 450,
+      "to": 500,
+      "count": 11059
+    },
+    {
+      "from": 500,
+      "to": 550,
+      "count": 5405
+    },
+    {
+      "from": 550,
+      "to": 600,
+      "count": 2507
+    },
+    {
+      "from": 600,
+      "to": 650,
+      "count": 1378
+    },
+    {
+      "from": 650,
+      "to": 700,
+      "count": 932
+    },
+    {
+      "from": 700,
+      "to": 750,
+      "count": 632
+    },
+    {
+      "from": 750,
+      "to": 800,
+      "count": 411
+    },
+    {
+      "from": 800,
+      "to": null,
+      "count": 1304
+    }
+  ],
+  "categories": [
+    {
+      "key": "injection",
+      "count": 26416,
+      "median_points": 270,
+      "share_of_points": 0.331
+    },
+    {
+      "key": "memory",
+      "count": 21959,
+      "median_points": 300,
+      "share_of_points": 0.292
+    },
+    {
+      "key": "other",
+      "count": 20071,
+      "median_points": 220,
+      "share_of_points": 0.209
+    },
+    {
+      "key": "access",
+      "count": 16007,
+      "median_points": 215,
+      "share_of_points": 0.168
+    }
+  ],
+  "fix_types": [
+    {
+      "key": "upgrade",
+      "count": 79673,
+      "median_points": 250,
+      "share_of_points": 0.937
+    },
+    {
+      "key": "code_change",
+      "count": 3383,
+      "median_points": 315,
+      "share_of_points": 0.046
+    },
+    {
+      "key": "config",
+      "count": 1240,
+      "median_points": 260,
+      "share_of_points": 0.015
+    },
+    {
+      "key": "unclear",
+      "count": 157,
+      "median_points": 245,
+      "share_of_points": 0.002
+    }
+  ],
+  "kev": {
+    "count": 1479,
+    "median_points": 955,
+    "other_median_points": 290,
+    "share_of_points": 0.015
+  },
+  "factor_influence": {
+    "severity": 0.63,
+    "urgency": 0.72,
+    "difficulty": 0.13,
+    "rarity": 0.25
+  },
+  "accuracy": {
+    "sample": 500,
+    "granite_error": 1.11,
+    "guess_error": 1.38,
+    "by_answer": [
+      {
+        "answer": "control",
+        "count": 292,
+        "nist_impact": 4.69,
+        "granite_impact": 4.94
+      },
+      {
+        "answer": "outage",
+        "count": 75,
+        "nist_impact": 3.76,
+        "granite_impact": 3.59
+      },
+      {
+        "answer": "data",
+        "count": 110,
+        "nist_impact": 3.64,
+        "granite_impact": 3.67
+      },
+      {
+        "answer": "minor",
+        "count": 23,
+        "nist_impact": 3.23,
+        "granite_impact": 2.78
+      }
+    ]
+  }
+}
