@@ -34,4 +34,5 @@ urlpatterns = [
     re_path(r'^board/([0-9]+)/addpoints$', views.addPointsApi),
     re_path(r'^challenges$', views.challengesApi),
     re_path(r'^leaderboard$', views.leaderboardApi),
+    re_path(r'^insights$', views.insightsApi),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

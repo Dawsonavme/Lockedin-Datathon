@@ -135,6 +135,15 @@ class ExplainTests(ApiTestCase):
         self.assertEqual(self.call('get', '/board/999/explain').status_code, 404)
 
 
+class InsightsTests(ApiTestCase):
+    def test_serves_the_insights_file(self):
+        response = self.call('get', '/insights')
+        if response.status_code == 404:
+            self.assertIn('insights.py', response.json()['detail'])
+        else:
+            self.assertIn('histogram', response.json())
+
+
 class GameTests(ApiTestCase):
     def setUp(self):
         self.bounty = make_bounty('CVE-1', value=300)

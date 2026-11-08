@@ -1,3 +1,6 @@
+import json
+
+from django.conf import settings
 from django.core import signing
 from django.core.files.storage import default_storage
 from django.db import transaction
@@ -446,6 +449,16 @@ def challengesApi(request):
             'Bounties': BountyCardSerializer([by_id[b.pk] for b in weekly], many=True).data,
         },
     })
+
+
+INSIGHTS = settings.BASE_DIR.parent / 'Bounty' / 'assets' / 'data' / 'parsed' / 'insights.json'
+
+
+def insightsApi(request):
+    """Board statistics for the insights page, made by backend/Bounty/src/bounty/insights.py."""
+    if not INSIGHTS.exists():
+        return error('No insights yet. Run src/bounty/insights.py in backend/Bounty.', 404)
+    return JsonResponse(json.loads(INSIGHTS.read_text()))
 
 
 def leaderboardApi(request):
